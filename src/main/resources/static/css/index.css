@@ -1,0 +1,82 @@
+.page-body {
+    padding: 0 40px;
+}
+
+    .line-of-adding {
+        position: relative;
+        margin: 20px;
+
+    }
+
+        .input_new-dir {
+            width: 440px;
+            height: 25px;
+        }
+
+    
+    .list-of-dir-and-files-wr {
+        min-width: 440px;
+        max-width: 1000px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+        .list-title-wr {
+            height: 42px;
+            position: relative;
+        }
+
+            .list-title{
+                margin-top: 10px;
+                margin-left: 15px;
+                position: absolute;
+            }
+
+
+    .table-of-dir-and-files {
+        overflow-y: auto;
+        max-height: 60vh;
+    }
+
+        table {
+            width: 100%;
+            text-align: center;
+        }
+
+            thead {
+                background: #90d0ff;
+            }
+
+                td {
+                    padding: 0 10px;
+                }
+
+                .date-column {
+                    width: 150px;
+
+                }
+
+                td.base-directory-column {
+                    text-align: left;
+                }
+
+                .num-of-dir-column {
+                    width: 120px;
+                }
+
+                .num-of-files-column {
+                    width: 120px;
+                }
+
+                .total-size-of-files-column {
+                    width: 130px;
+                
+                }
+
+                .list-of-files-column {
+                    width: 80px;
+                }
+
+
+
+
