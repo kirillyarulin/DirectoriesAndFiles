@@ -1,6 +1,9 @@
 package ru.kirillyarulin.DirectoriesAndFiles.models;
 
+import org.hibernate.annotations.NaturalId;
+
 import javax.persistence.*;
+import java.util.Objects;
 
 /**
  * Created by Kirill Yarulin on 25.07.18
@@ -9,25 +12,35 @@ import javax.persistence.*;
 @Table(name = "INTERNAL_FILES")
 public class InternalFile {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "file_id")
     private long id;
+    @NaturalId
     @Column(name = "name")
     private String name;
-    @Column(name = "id_directory")
+    @Column(name = "is_directory")
     private boolean isDirectory;
+    @ManyToOne
+    @JoinColumn(name = "parent_directory_id")
+    private Directory parentDirectory;
     @Column(name = "size")
     private long size;
-    @ManyToOne
-    private Directory parentDirectory;
 
     public InternalFile() {
     }
 
-    public InternalFile(String name, boolean isDirectory, long size) {
+    public InternalFile(String name, boolean isDirectory, Directory parentDirectory, long size) {
         this.name = name;
         this.isDirectory = isDirectory;
         this.size = size;
+        this.parentDirectory = parentDirectory;
+    }
+
+    public InternalFile(String name, boolean isDirectory, Directory parentDirectory) {
+        this.name = name;
+        this.isDirectory = isDirectory;
+        this.size = size;
+        this.parentDirectory = parentDirectory;
     }
 
     public long getId() {
@@ -68,5 +81,31 @@ public class InternalFile {
 
     public void setParentDirectory(Directory parentDirectory) {
         this.parentDirectory = parentDirectory;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InternalFile that = (InternalFile) o;
+        return id == that.id &&
+                Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "InternalFile{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", isDirectory=" + isDirectory +
+                ", parentDirectory=" + parentDirectory +
+                ", size=" + size +
+                '}';
     }
 }
