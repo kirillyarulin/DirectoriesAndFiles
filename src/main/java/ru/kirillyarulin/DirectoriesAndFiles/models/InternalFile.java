@@ -1,6 +1,5 @@
 package ru.kirillyarulin.DirectoriesAndFiles.models;
 
-import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -15,7 +14,6 @@ public class InternalFile {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "file_id")
     private long id;
-    @NaturalId
     @Column(name = "name")
     private String name;
     @Column(name = "is_directory")
