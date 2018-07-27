@@ -25,8 +25,12 @@ public final class FileSizeConverter {
             return dFormat.format(sizeInBytes / Math.pow(1024, 2)) + "Mb";
         } else if (sizeInBytes < Math.pow(1024, 4)) {
             return dFormat.format(sizeInBytes / Math.pow(1024, 3)) + "Gb";
-        } else {
+        } else if (sizeInBytes < Math.pow(1024, 5)) {
             return dFormat.format(sizeInBytes / Math.pow(1024, 4)) + "Tb";
+        } else if (sizeInBytes < Math.pow(1024, 6)) {
+            return dFormat.format(sizeInBytes / Math.pow(1024, 5)) + "Pb";
+        } else {
+            return dFormat.format(sizeInBytes / Math.pow(1024, 6)) + "Eb";
         }
     }
 
