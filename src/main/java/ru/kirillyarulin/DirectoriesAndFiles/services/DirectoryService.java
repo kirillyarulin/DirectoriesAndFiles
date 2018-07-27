@@ -22,6 +22,10 @@ public class DirectoryService {
     @Autowired
     private DirectoryRepository directoryRepository;
 
+    public List<Directory> getAllDirectories() {
+        return directoryRepository.findAll();
+    }
+
     public void addDirectory(String directoryPath) {
         directoryRepository.save(getDirectoryByPath(directoryPath));
     }

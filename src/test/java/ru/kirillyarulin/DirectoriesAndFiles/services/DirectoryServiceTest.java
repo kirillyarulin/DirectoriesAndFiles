@@ -39,6 +39,12 @@ public class DirectoryServiceTest {
     @Autowired
     private DirectoryService directoryService;
 
+    @Test
+    public void getAllDirectories() {
+        directoryService.getAllDirectories();
+
+        verify(directoryRepository).findAll();
+    }
 
     @Test
     public void addDirectory() {
