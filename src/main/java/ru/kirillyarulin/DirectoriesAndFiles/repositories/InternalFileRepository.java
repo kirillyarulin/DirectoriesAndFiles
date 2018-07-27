@@ -12,6 +12,5 @@ import java.util.List;
  */
 @Repository
 public interface InternalFileRepository extends CrudRepository<InternalFile, Long> {
-    List<InternalFile> findAllByParentDirectory(Directory parentDirectory);
     List<InternalFile> findAllByParentDirectory_Id(long directoryId);
 }

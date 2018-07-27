@@ -44,17 +44,6 @@ public class InternalFileRepositoryIT {
     }
 
     @Test
-    public void findAllByParentDirectory() {
-        List<InternalFile> allByParentDirectory = internalFileRepository.findAllByParentDirectory(testDirectory1);
-
-        assertEquals(3,allByParentDirectory.size());
-        assertTrue(allByParentDirectory.contains(testFile1));
-        assertTrue(allByParentDirectory.contains(testFile2));
-        assertTrue(allByParentDirectory.contains(testFile3));
-        assertFalse(allByParentDirectory.contains(testFile4));
-    }
-
-    @Test
     public void findAllByParentDirectory_Id() {
         List<InternalFile> allByParentDirectory = internalFileRepository.findAllByParentDirectory_Id(testDirectory1.getId());
 
