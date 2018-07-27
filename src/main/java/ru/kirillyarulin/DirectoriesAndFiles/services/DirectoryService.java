@@ -37,7 +37,7 @@ public class DirectoryService {
     public Directory getDirectoryByPath(String directoryPath) {
         Path path = Paths.get(directoryPath);
         if (!Files.exists(path)) {
-            throw new IllegalArgumentException("This directory does not exist");
+            throw new IllegalArgumentException("There is no \"" + directoryPath + "\" directory");
         }
 
         FileVisitorImlp fileVisitor = new FileVisitorImlp();
@@ -60,7 +60,7 @@ public class DirectoryService {
 
         private long numberOfFiles = 0;
         private long numberOfSubdirectories = -1; //take into account the start catalog
-        private long totalSizeOfFiles = 0;
+        private long  totalSizeOfFiles = 0;
 
         @Override
         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -70,10 +70,12 @@ public class DirectoryService {
 
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-            numberOfFiles++;
-            try {
-                totalSizeOfFiles += Files.size(file);
-            } catch (IOException ignored) {
+            if (Files.isRegularFile(file)) {
+                numberOfFiles++;
+                try {
+                    totalSizeOfFiles += Files.size(file);
+                } catch (IOException ignored) {
+                }
             }
             return FileVisitResult.CONTINUE;
         }
