@@ -67,24 +67,6 @@ public class DirectoryServiceTest {
         verify(directoryRepository).delete(directory);
     }
 
-    @Test
-    public void sizeOfFiles() {
-        try {
-            Path tempFile1 = Files.createTempFile("tempFile", "");
-            Path tempFile2 = Files.createTempFile("tempFile", "");
-            Files.newOutputStream(tempFile1).write(new byte[]{1, 2, 3});
-            Files.newOutputStream(tempFile2).write(new byte[]{4, 5});
-            List<Path> files = new ArrayList<Path>() {{
-                add(tempFile1);
-                add(tempFile2);
-            }};
-
-            assertEquals(5, directoryService.sizeOfFiles(files));
-
-        } catch (IOException e) {
-            fail("Could not create temporary directory");
-        }
-    }
 
     @Test
     public void getDirectoryByPath() {

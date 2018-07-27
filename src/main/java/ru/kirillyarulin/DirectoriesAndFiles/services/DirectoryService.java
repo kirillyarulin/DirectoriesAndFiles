@@ -6,9 +6,8 @@ import ru.kirillyarulin.DirectoriesAndFiles.models.Directory;
 import ru.kirillyarulin.DirectoriesAndFiles.repositories.DirectoryRepository;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,23 +25,14 @@ public class DirectoryService {
         return directoryRepository.findAll();
     }
 
-    public void addDirectory(String directoryPath) {
-        directoryRepository.save(getDirectoryByPath(directoryPath));
+    public Directory addDirectory(String directoryPath) {
+        return directoryRepository.save(getDirectoryByPath(directoryPath));
     }
 
     public void deleteDirectory(Directory directory) {
         directoryRepository.delete(directory);
     }
 
-    public long sizeOfFiles(List<Path> files) {
-        return files.stream().mapToLong(x -> {
-            try {
-                return Files.size(x);
-            } catch (IOException e) {
-                return 0;
-            }
-        }).sum();
-    }
 
     public Directory getDirectoryByPath(String directoryPath) {
         Path path = Paths.get(directoryPath);
@@ -50,24 +40,52 @@ public class DirectoryService {
             throw new IllegalArgumentException("This directory does not exist");
         }
 
+        FileVisitorImlp fileVisitor = new FileVisitorImlp();
         try {
-            // get a map containing 2 lists: with the key "false" - list of nested files,
-            // with the key "true" - the list of subdirectories
-            Map<Boolean, List<Path>> map = Files.walk(path)
-                    .filter(x -> !x.equals(path))
-                    .collect(Collectors.partitioningBy(Files::isDirectory));
+            Files.walkFileTree(path,fileVisitor);
 
             Directory directory = new Directory();
             directory.setPath(directoryPath);
-            directory.setNumberOfFiles(map.get(false).size());
-            directory.setNumberOfSubdirectories(map.get(true).size());
-            directory.setTotalSizeOfFiles(sizeOfFiles(map.get(false)));
+            directory.setNumberOfFiles(fileVisitor.numberOfFiles);
+            directory.setNumberOfSubdirectories(fileVisitor.numberOfSubdirectories);
+            directory.setTotalSizeOfFiles(fileVisitor.totalSizeOfFiles);
 
             return directory;
-
         } catch (IOException e) {
             throw new IllegalArgumentException("An error occurred while retrieving the directory", e);
         }
     }
 
+    class FileVisitorImlp implements FileVisitor<Path> {
+
+        private long numberOfFiles = 0;
+        private long numberOfSubdirectories = -1; //take into account the start catalog
+        private long totalSizeOfFiles = 0;
+
+        @Override
+        public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+            numberOfSubdirectories++;
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+            numberOfFiles++;
+            try {
+                totalSizeOfFiles += Files.size(file);
+            } catch (IOException ignored) {
+            }
+            return FileVisitResult.CONTINUE;
+        }
+
+        @Override
+        public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
+            return FileVisitResult.SKIP_SUBTREE;
+        }
+
+        @Override
+        public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+            return FileVisitResult.CONTINUE;
+        }
+    }
 }
