@@ -10,6 +10,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.kirillyarulin.DirectoriesAndFiles.models.Directory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -37,7 +40,7 @@ public class DirectoryRepositoryIT {
     @Test
     public void findById() {
         Directory receivedDirectory = directoryRepository.findById(testDirectory1.getId()).get();
-        assertEquals(testDirectory1,receivedDirectory);
+        assertEquals(testDirectory1, receivedDirectory);
     }
 
     @Test
@@ -51,7 +54,7 @@ public class DirectoryRepositoryIT {
         Directory newDirectory = new Directory("/home/new", 1, 2, 3);
         directoryRepository.save(newDirectory);
         Directory receivedDirectory = directoryRepository.findById(newDirectory.getId()).get();
-        assertEquals(newDirectory,receivedDirectory);
+        assertEquals(newDirectory, receivedDirectory);
     }
 
     @Test
@@ -82,7 +85,9 @@ public class DirectoryRepositoryIT {
 
     @Test
     public void findAll() {
-         assertThat(directoryRepository.findAll(),Matchers.containsInAnyOrder(testDirectory1,testDirectory2,testDirectory3));
+        List<Directory> all = directoryRepository.findAll();
+        assertThat(all, Matchers.containsInAnyOrder(testDirectory1, testDirectory2, testDirectory3));
+        assertEquals(3, all.size());
     }
 
 
