@@ -11,6 +11,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -34,11 +35,20 @@ public class DirectoryService {
         directoryRepository.delete(directory);
     }
 
+    public Directory getDirectoryById(long directoryId) {
+        return directoryRepository.findById(directoryId)
+                .orElseThrow(() -> new IllegalArgumentException("Directory with id = " + directoryId + " does not exist"));
+    }
 
     public Directory getDirectoryByPath(String directoryPath) {
         Path path = Paths.get(directoryPath);
         if (!Files.exists(path)) {
             throw new IllegalArgumentException("There is no \"" + directoryPath + "\" directory");
+        }
+
+        Optional<Directory> directoryOptional = directoryRepository.findByPath(directoryPath);
+        if (directoryOptional.isPresent()) {
+            return directoryOptional.get();
         }
 
         FileVisitorImlp fileVisitor = new FileVisitorImlp();

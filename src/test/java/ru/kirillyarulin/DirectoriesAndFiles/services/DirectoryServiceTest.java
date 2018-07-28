@@ -15,10 +15,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by Kirill Yarulin on 27.07.18
@@ -67,6 +70,19 @@ public class DirectoryServiceTest {
         verify(directoryRepository).delete(directory);
     }
 
+    @Test
+    public void getDirectoryByExistingId() {
+        Directory tmpDir = new Directory();
+        tmpDir.setId(1);
+        when(directoryRepository.findById(1L)).thenReturn(Optional.of(tmpDir));
+
+        assertEquals(1,  directoryService.getDirectoryById(1).getId());
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getDirectoryByNonexistentId() {
+        directoryService.getDirectoryById(2);
+    }
 
     @Test
     public void getDirectoryByPath() {
