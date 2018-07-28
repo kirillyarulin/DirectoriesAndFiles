@@ -44,6 +44,13 @@ public class DirectoryRepositoryIT {
     }
 
     @Test
+    public void findByPath() {
+        Directory receivedDirectory = directoryRepository.findByPath(testDirectory1.getPath()).get();
+
+        assertEquals(testDirectory1, receivedDirectory);
+    }
+
+    @Test
     public void existById() {
         assertTrue(directoryRepository.existsById(testDirectory1.getId()));
         assertFalse(directoryRepository.existsById(99L));
