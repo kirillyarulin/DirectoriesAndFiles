@@ -3,6 +3,7 @@ package ru.kirillyarulin.DirectoriesAndFiles.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.kirillyarulin.DirectoriesAndFiles.models.Directory;
+import ru.kirillyarulin.DirectoriesAndFiles.models.InternalFile;
 import ru.kirillyarulin.DirectoriesAndFiles.repositories.DirectoryRepository;
 
 import java.io.IOException;
@@ -49,6 +50,11 @@ public class DirectoryService {
             directory.setNumberOfFiles(fileVisitor.numberOfFiles);
             directory.setNumberOfSubdirectories(fileVisitor.numberOfSubdirectories);
             directory.setTotalSizeOfFiles(fileVisitor.totalSizeOfFiles);
+
+            directory.setInternalFiles(Files.list(path)
+                    .map(p -> new InternalFile(p.getFileName().toString(),Files.isDirectory(p),directory,p.toFile().length()))
+                    .collect(Collectors.toList())
+            );
 
             return directory;
         } catch (IOException e) {

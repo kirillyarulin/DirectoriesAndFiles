@@ -84,6 +84,7 @@ public class DirectoryServiceTest {
             assertEquals(tempDir.toString(), directoryByPath.getPath());
             assertEquals(3, directoryByPath.getNumberOfFiles());
             assertEquals(2, directoryByPath.getNumberOfSubdirectories());
+            assertEquals(3,directoryByPath.getInternalFiles().size());
 
         } catch (IOException e) {
             fail("Could not create temporary directory");
