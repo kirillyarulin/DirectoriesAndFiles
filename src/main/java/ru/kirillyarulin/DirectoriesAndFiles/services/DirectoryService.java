@@ -31,8 +31,8 @@ public class DirectoryService {
         return directoryRepository.save(getDirectoryByPath(directoryPath));
     }
 
-    public void deleteDirectory(Directory directory) {
-        directoryRepository.delete(directory);
+    public void deleteDirectoryById(long directoryId) {
+        directoryRepository.deleteById(directoryId);
     }
 
     public Directory getDirectoryById(long directoryId) {

@@ -64,10 +64,9 @@ public class DirectoryServiceTest {
     }
 
     @Test
-    public void deleteDirectory() {
-        Directory directory = new Directory();
-        directoryService.deleteDirectory(directory);
-        verify(directoryRepository).delete(directory);
+    public void deleteDirectoryById() {
+        directoryService.deleteDirectoryById(1);
+        verify(directoryRepository).deleteById(1L);
     }
 
     @Test
