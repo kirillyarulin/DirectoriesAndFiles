@@ -1,6 +1,8 @@
 package ru.kirillyarulin.DirectoriesAndFiles.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Objects;
 
@@ -18,6 +20,7 @@ public class InternalFile {
     private String name;
     @Column(name = "is_directory")
     private boolean isDirectory;
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "parent_directory_id")
     private Directory parentDirectory;
