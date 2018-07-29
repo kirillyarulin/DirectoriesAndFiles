@@ -1,65 +1,157 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <!-- Required meta tags -->
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <script th:src="@{js/main.js}"></script>
+    <link rel="stylesheet" href="../static/css/index.css" data-th-href="@{css/index.css}">
     <title>Директории и файлы</title>
-    <link rel="stylesheet" type="text/css" href="css/default.css">
-    <link rel="stylesheet" type="text/css" href="css/index.css">
+
+    <script th:inline="javascript">
+        let directories = /*[[${directories}]]*/ directories;
+    </script>
+
 </head>
 <body>
-<div class="header">
-    <div class="title">Директории и файлы</div>
-</div>
-<div class="main-wrapper">
-    <div class="page-body">
-        <div class="line-of-adding">
-            <label for="input-new-dir">Новая директория</label>
-            <input type="text" class="input_new-dir" id="input-new-dir" placeholder="Добавить директорию..">
-            <button type="button">Добавить в список</button>
+<h1 class="ml-4 mt-1 mb-3">Директории и файлы</h1>
+<div class="container px-5">
+
+    <div th:if="${isError}">
+        <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+            Директории с таким местоположением не существует!
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
+    </div>
 
-        <div class="list-of-dir-and-files-wr">
-            <div class="list-title-wr">
-                <div class="list-title">Список директорий и файлов</div>
+    <form class="form-inline" action="#" th:action="@{/addDirectory}" method="post">
+        <div class="form-group input-group w-100 mb-3">
+            <label class="mr-2" for="input-new-directory">Новая директория:</label>
+            <input type="text" name="directoryPath" class="form-control" id="input-new-directory">
+            <div class="input-group-append ">
+                <button class="btn btn-primary" type="submit">Добавить в список</button>
             </div>
+        </div>
+    </form>
 
-            <div class="table-of-dir-and-files">
 
-                <table border="1">
+    <table class="table table-bordered table-hover table-sm text-center">
+        <thead class="thead-light">
+        <tr>
+            <th class="date-column align-middle " th:classappend="${tableSortingOrder} ? dropup">
+                <div class="dropdown-toggle">Дата</div>
+                <form action="#" th:action="@{/changeTableSortingOrder}" method="get">
+                    <button type="submit" class="table-sorting-order btn"></button>
+                </form>
+            </th>
+            <th class="base-directory-column align-middle">Базовая директория</th>
+            <th class="num-of-dir-column align-middle">Директорий</th>
+            <th class="num-of-files-column align-middle">Файлов</th>
+            <th class="total-size-of-files-column align-middle">Суммарный размер файлов</th>
+            <th class="list-of-files-column"></th>
+            <th class="delete-directory-column"></th>
+        </tr>
+        </thead>
 
-                    <thead>
-                    <tr >
-                        <th class="date-column">Дата</th>
-                        <th class="base-directory-column">Базовая директория</th>
-                        <th class="num-of-dir-column">Директорий</th>
-                        <th class="num-of-files-column">Файлов</th>
-                        <th class="total-size-of-files-column">Суммарный размер файлов</th>
-                        <th class="list-of-files-column"></th>
+        <tbody class="text-truncate">
+
+        <tr th:each="directory : ${directories}">
+            <td class="date-column align-middle"
+                th:text="${#temporals.format(directory.timeOfAddition, 'dd-MM-yyyy HH:mm')}">00.00.0000 00:00
+            </td>
+            <td class="base-directory-column text-left align-middle">
+                <div class="base-directory-text" data-toggle="tooltip" data-placement="top" title="/temp"
+                     th:title="${directory.path}" th:text="${directory.path}">/temp/
+                </div>
+
+            </td>
+            <td class="num-of-dir-column align-middle" th:text="${directory.numberOfSubdirectories}">12</td>
+            <td class="num-of-files-column align-middle" th:text="${directory.numberOfFiles}">251</td>
+            <td class="total-size-of-files-column align-middle"
+                th:text="${T(ru.kirillyarulin.DirectoriesAndFiles.utils.FileSizeConverter).format(directory.totalSizeOfFiles)}">
+                1Mb
+            </td>
+            <td class="list-of-files-column align-middle p-1">
+                <input type="hidden" name="directoryId" th:value="${directory.id}"/>
+                <button id="js-btn-show-files" class="btn btn-secondary py-1 px-2" type="submit" data-toggle="modal"
+                        data-target="#exampleModalCenter">Файлы
+                </button>
+            </td>
+            <td class="delete-directory-column align-middle">
+                <div class="d-flex justify-content-center">
+                    <form th:action="@{deleteDirectory}" method="get">
+                        <input type="hidden" name="directoryId" th:value="${directory.id}"/>
+                        <button type="submit" class="close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </form>
+                </div>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+     aria-hidden="true" th:fragment="modalContents">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h5 class="modal-title" id="exampleModalLongTitle">Файлы</h5>
+                <button  type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped text-center">
+                    <thead class="">
+                    <tr>
+                        <th class="file-column">Файл</th>
+                        <th class="size-column">Размер</th>
                     </tr>
                     </thead>
-
-                    <tbody>
-                    <!--<tr>-->
-                    <!--<td class="date-column">14.09.2016 18:03</td>-->
-                    <!--<td class="base-directory-column">/opt/tomcat/temp</td>-->
-                    <!--<td class="num-of-dir-column">12</td>-->
-                    <!--<td class="num-of-files-column">251</td>-->
-                    <!--<td class="total-size-of-files-column">128 Mb</td>-->
-                    <!--<td class="list-of-files-column">-->
-                    <!--<button type="button">Файлы</button>-->
-                    <!--</td>-->
-                    <!--</tr>-->
-
+                    <tbody id="js-modal-body">
+                    <template id="modal-row-template">
+                        <tr>
+                            <td class="file-column">
+                                <div class="file-column_name" id="js-file-column_name" data-toggle="tooltip"
+                                     data-placement="top" title="">
+                                </div>
+                            </td>
+                            <td class="size-column" id="js-size-column"></td>
+                        </tr>
+                    </template>
                     </tbody>
                 </table>
-
+            </div>
+            <div class="modal-footer">
+                <button  type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
             </div>
         </div>
-
-
     </div>
 </div>
-<div class="footer"></div>
 
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
 </body>
 </html>

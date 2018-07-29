@@ -1,82 +1,111 @@
-.page-body {
-    padding: 0 40px;
+.container {
+    max-width: 1400px;
+    min-width: 800px;
 }
 
-    .line-of-adding {
-        position: relative;
-        margin: 20px;
 
-    }
+/*столбцы основной таблицы*/
 
-        .input_new-dir {
-            width: 440px;
-            height: 25px;
-        }
+.date-column {
+    width: 130px;
+    position: relative;
 
-    
-    .list-of-dir-and-files-wr {
-        min-width: 440px;
-        max-width: 1000px;
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-        .list-title-wr {
-            height: 42px;
-            position: relative;
-        }
-
-            .list-title{
-                margin-top: 10px;
-                margin-left: 15px;
-                position: absolute;
-            }
+}
 
 
-    .table-of-dir-and-files {
-        overflow-y: auto;
-        max-height: 60vh;
-    }
+.base-directory-column {
+    min-width: 48px;
+    max-width: 748px;
+    position: relative;
+}
 
-        table {
-            width: 100%;
-            text-align: center;
-        }
+.num-of-dir-column {
+    width: 100px;
+}
 
-            thead {
-                background: #90d0ff;
-            }
+.num-of-files-column {
+    width: 70px;
 
-                td {
-                    padding: 0 10px;
-                }
+}
 
-                .date-column {
-                    width: 150px;
+.total-size-of-files-column {
+    width: 135px;
+}
 
-                }
+.list-of-files-column {
+    width: 75px;
+}
 
-                td.base-directory-column {
-                    text-align: left;
-                }
-
-                .num-of-dir-column {
-                    width: 120px;
-                }
-
-                .num-of-files-column {
-                    width: 120px;
-                }
-
-                .total-size-of-files-column {
-                    width: 130px;
-                
-                }
-
-                .list-of-files-column {
-                    width: 80px;
-                }
+.delete-directory-column {
+    width: 25px;
+}
 
 
+
+.base-directory-text {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: absolute;
+    width: 95%;
+    bottom: 9px;
+}
+
+
+
+
+/*модальное окно*/
+
+.modal-content {
+    min-height: 200px;
+    height: 70vh;
+    min-width: 350px;
+
+}
+
+.modal-body {
+    overflow-y: auto;
+}
+
+.modal-header {
+    min-height: 50px;
+}
+
+.modal-body thead {
+    background: #bebebe;
+}
+
+.file-column {
+    position: relative
+}
+
+.file-column_name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: absolute;
+    width: 95%;
+    bottom: 9px;
+}
+
+.size-column {
+    width: 110px;
+}
+
+
+
+
+
+/*кнопка смены порядка следования строк таблицы*/
+.table-sorting-order {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    padding: 0;
+    top: 22px;
+    right: 38px;
+    opacity: 0;
+    border: 0;
+}
 
 
