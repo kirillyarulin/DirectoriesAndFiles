@@ -11,7 +11,6 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,7 +24,13 @@ public class DirectoryService {
     private DirectoryRepository directoryRepository;
 
     public List<Directory> getAllDirectories() {
-        return directoryRepository.findAll();
+        return directoryRepository.findAll().stream().filter(directory -> {
+            if (!Files.exists(Paths.get(directory.getPath()))) {
+                deleteDirectoryById(directory.getId());
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toList());
     }
 
     public Directory addDirectory(String directoryPath) {
@@ -54,7 +59,7 @@ public class DirectoryService {
 
         FileVisitorImlp fileVisitor = new FileVisitorImlp();
         try {
-            Files.walkFileTree(path,fileVisitor);
+            Files.walkFileTree(path, fileVisitor);
 
             Directory directory = new Directory();
             directory.setPath(directoryPath);
@@ -63,7 +68,7 @@ public class DirectoryService {
             directory.setTotalSizeOfFiles(fileVisitor.totalSizeOfFiles);
 
             directory.setInternalFiles(Files.list(path)
-                    .map(p -> new InternalFile(p.getFileName().toString(),Files.isDirectory(p),directory,p.toFile().length()))
+                    .map(p -> new InternalFile(p.getFileName().toString(), Files.isDirectory(p), directory, p.toFile().length()))
                     .sorted(new InternalFileComparator())
                     .collect(Collectors.toList())
             );
@@ -78,7 +83,7 @@ public class DirectoryService {
 
         private long numberOfFiles = 0;
         private long numberOfSubdirectories = -1; //take into account the start catalog
-        private long  totalSizeOfFiles = 0;
+        private long totalSizeOfFiles = 0;
 
         @Override
         public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
@@ -119,7 +124,8 @@ public class DirectoryService {
                 return 1;
             } else if (f1.isDirectory() && !f2.isDirectory()) {
                 return -1;
-            } if (f1.getName().matches(".*\\d.*") && f1.getName().matches(".*\\d.*")) {
+            }
+            if (f1.getName().matches(".*\\d.*") && f1.getName().matches(".*\\d.*")) {
                 char[] name1 = f1.getName().toCharArray();
                 char[] name2 = f2.getName().toCharArray();
                 int maxSize = name1.length > name2.length ? name1.length : name2.length;
@@ -139,26 +145,26 @@ public class DirectoryService {
                         int k1 = i;
                         int k2 = i;
 
-                        while (k1+1 < name1.length && Character.isDigit(name1[k1+1])) {
-                            sb1.append(Character.toString(name1[k1+1]));
+                        while (k1 + 1 < name1.length && Character.isDigit(name1[k1 + 1])) {
+                            sb1.append(Character.toString(name1[k1 + 1]));
                             k1++;
                         }
 
-                        while (k2+1 < name2.length && Character.isDigit(name2[k2+1])) {
-                            sb2.append(Character.toString(name2[k2+1]));
+                        while (k2 + 1 < name2.length && Character.isDigit(name2[k2 + 1])) {
+                            sb2.append(Character.toString(name2[k2 + 1]));
                             k2++;
                         }
 
                         long res1 = Long.parseLong(sb1.toString());
                         long res2 = Long.parseLong(sb2.toString());
                         if (res1 != res2) {
-                            return Long.compare(res1,res2);
+                            return Long.compare(res1, res2);
                         } else {
                             i = k1;
                         }
 
                     } else if (!(c1 == c2)) {
-                        return Character.compare(c1,c2);
+                        return Character.compare(c1, c2);
                     }
                 }
             }
