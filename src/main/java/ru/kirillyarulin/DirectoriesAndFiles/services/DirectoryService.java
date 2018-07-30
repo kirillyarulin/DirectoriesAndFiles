@@ -149,10 +149,10 @@ public class DirectoryService {
                             k2++;
                         }
 
-                        int res1 = Integer.parseInt(sb1.toString());
-                        int res2 = Integer.parseInt(sb2.toString());
+                        long res1 = Long.parseLong(sb1.toString());
+                        long res2 = Long.parseLong(sb2.toString());
                         if (res1 != res2) {
-                            return Integer.compare(res1,res2);
+                            return Long.compare(res1,res2);
                         } else {
                             i = k1;
                         }
