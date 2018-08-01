@@ -118,16 +118,14 @@ public class DirectoryService {
 
         @Override
         public int compare(InternalFile f1, InternalFile f2) {
-            f1.setName(f1.getName().toLowerCase());
-            f2.setName(f2.getName().toLowerCase());
             if (!f1.isDirectory() && f2.isDirectory()) {
                 return 1;
             } else if (f1.isDirectory() && !f2.isDirectory()) {
                 return -1;
             }
             if (f1.getName().matches(".*\\d.*") && f1.getName().matches(".*\\d.*")) {
-                char[] name1 = f1.getName().toCharArray();
-                char[] name2 = f2.getName().toCharArray();
+                char[] name1 = f1.getName().toLowerCase().toCharArray();
+                char[] name2 = f2.getName().toLowerCase().toCharArray();
                 int maxSize = name1.length > name2.length ? name1.length : name2.length;
                 for (int i = 0; i < maxSize; i++) {
                     if (i == name1.length) {
@@ -168,7 +166,7 @@ public class DirectoryService {
                     }
                 }
             }
-            return f1.getName().compareTo(f2.getName());
+            return f1.getName().toLowerCase().compareTo(f2.getName().toLowerCase());
         }
     }
 }
